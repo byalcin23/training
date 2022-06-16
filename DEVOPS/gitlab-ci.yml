@@ -1,0 +1,40 @@
+
+stages:
+  - build
+  - test
+  - deploy
+
+image: docker:dind
+
+before_script:
+  - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" 
+
+build:
+  tags:
+    - service-runner
+  stage: build
+  script:
+    
+    - ./DEVOPS/web1/mvnw package  && java -jar ./DEVOPS/web1/target/spring-boot-initial-0.0.1-SNAPSHOT.jar
+    - ./DEVOPS/web2/mvnw package  && java -jar ./DEVOPS/web2/target/spring-boot-initial-0.0.1-SNAPSHOT.jar
+    - docker build  -t "bahadir23/vodafone:web1" ./DEVOPS/web1 .
+    - docker build  -t "bahadir23/vodafone:web2" ./DEVOPS/web2 .
+    - docker push "bahadir23/vodafone:web1"
+    - docker push "bahadir23/vodafone:web2"
+    
+
+deploy:
+  tags:
+    - service-runner
+  stage: deploy
+  script:
+    - minikube addons enable ingress 
+    - kubectl create deployment web1 --image=bahadir23/vodafone:web1
+    - kubectl create deployment web2 --image=bahadir23/vodafone:web2
+    - kubectl expose deployment web1 --type=NodePort --port=8080
+    - kubectl expose deployment web2 --type=NodePort --port=8080
+    - kubectl apply -f  ingress.yaml
+  dependencies:
+    - build
+  needs:
+    - build
