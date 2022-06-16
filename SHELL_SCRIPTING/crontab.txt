@@ -1,0 +1,1 @@
+* * * * *	/home/bahadiry/Desktop/VODAFONE/SHELL_SCRIPTING/Shell_Checker.sh > /tmp/cron_log.log
