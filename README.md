@@ -9,11 +9,13 @@ Projeler içerisinde Dockerfile' lar hazırlanmıştır.
 İlerleyen aşamalarda minukube kullanacağımız için docker image'leri docker hub'ıma upload ettim.
 - **Start**
  > docker build -t bahadir23/vodafone:web1 ./web1 .
+ > 
  > docker build -t bahadir23/vodafone:web2 ./web2 .
 
 - **Eğer test etmekj istenir ise aşağıdaki gibi testler gerçekleştirilebilir.**
 
 >docker run -p 8080:8080 bahadir23/vodafone:web1
+>
 >curl -k http://localhost:8080
 
 - **Minikube**
@@ -27,10 +29,12 @@ Gerekli kurulumlar gerçekleştikten sonra :
 > minikube addons enable ingress 
 - Minikube deployment oluşturma 
 > kubectl create deployment web1 --image=bahadir23/vodafone:web1
+> 
 > kubectl create deployment web2 --image=bahadir23/vodafone:web2
 
 - Minikube port expose ederek projeyi ayağa kaldırma
 > kubectl expose deployment web1 --type=NodePort --port=8080 
+> 
 > kubectl expose deployment web2 --type=NodePort --port=8080 
 > 
 - Projeler 8080 portundan web yayını yapmaktadır ve son adım olarak ingress e geçiyoruz.
@@ -43,9 +47,11 @@ Gerekli kurulumlar gerçekleştikten sonra :
 ### Test 
 - Service url  
 > kubectl get service web1 
+> 
 > kubectl get service web2
 
 > curl -k <service_url>
+> 
 > curl -k <service_url>/v2
 
 "Greetings from Spring Boot!"     Ve   "Greetings from Spring Boot! web2"
